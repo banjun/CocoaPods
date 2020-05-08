@@ -392,6 +392,17 @@ describe_cli 'pod' do
       behaves_like cli_spec 'spec_lint_remote',
                             "spec lint --quick --allow-warnings --silent #{spec_url}"
     end
+
+    describe 'Lints a Pod with non-ascii pod name' do
+      # Enable xcodebuild so that the xcodebuild output can be processed by the validator
+      env_skip_xcodebuild_before = subject.environment_vars.delete('COCOAPODS_VALIDATOR_SKIP_XCODEBUILD')
+      # We have to disable verbose mode by adding --no-verbose here,
+      # otherwise xcodebuild output is included in execution output.
+      behaves_like cli_spec 'lib_lint_non_ascii_pod_name',
+                            'lib lint',
+                            '--no-verbose'
+      subject.environment_vars['COCOAPODS_VALIDATOR_SKIP_XCODEBUILD'] = env_skip_xcodebuild_before
+    end
   end
 
   #--------------------------------------#
